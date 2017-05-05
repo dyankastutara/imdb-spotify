@@ -43,8 +43,7 @@ var app = new Vue({
         username : this.username,
         password : this.password
       })
-      .then(function (req, res) {
-        // console.log(req.data.token)
+      .then(function(req,res) {
         localStorage.setItem("token", req.data.token);
         window.location.href ='http://127.0.0.1:8080/index.html';
       })
