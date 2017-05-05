@@ -32,11 +32,16 @@ methods.signup = (req, res)=>{
 
 methods.signin = function(req, res){
 	var user = req.user
-	var token = jwt.sign({
-    username: user.username}, 'secret', {expiresIn : '1h'});
-		res.send({
-			'token' : token
-		})
+  if(!user.msg){
+
+    var token = jwt.sign({
+      username: user.username}, 'secret', {expiresIn : '1h'});
+  		res.send({
+  			'token' : token
+  		})
+  }
+
+	res.send(user.msg)
 }
 
 methods.getAll = function(req, res){
