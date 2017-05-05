@@ -11,24 +11,21 @@ methods.signup = (req, res)=>{
   .then ((user)=>{
     if(!user){
       if (req.body.username.length==0){
-        // res.send("Username Cannot Empty")
-        res.alert('Username cannot null')
+        res.send("Username Cannot Empty")
       } else if(req.body.password.length < 6){
-        // res.send('Password must be minimum length 6 characters')
-        res.alert('Password must be minimum length 6 characters')
+        res.send('Password must be minimum length 6 characters')
       } else {
         User.create({
           username : req.body.username,
           password : bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8), null)
         })
-        .then(()=>{
-          res.send('OK')
-          // res.redirect('login')
+        .then((dt)=>{
+          res.send(dt)
         })
       }
     }
     else{
-      res.send('Username already exists')
+      res.send(user)
     }
   })
 };
