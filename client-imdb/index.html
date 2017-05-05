@@ -41,26 +41,35 @@
     </nav>
     <div class="container">
       <div class="text-center"><button v-on:click="pagePrev">Prev</button><input v-model="page" size="4" class="text-center"><button v-on:click="pageNext">Next</button></div><hr>
-      <div class="row">
-        <div class="col-sm-6 col-md-6" v-for="list in lists">
-        <a v-bind:href="list.title" v-on:click="trackClick">
-          <div class="col-sm-6 col-md-6">
-            <div class="thumbnail">
-              <img v-bind:src="url_img+list.poster_path" alt="..." style="min-height:300px;height:350px;">
+        <div class="row">
+          <div class="col-sm-6 col-md-6" v-for="list in lists">
+            <div class="col-sm-6 col-md-6">
+              <div class="thumbnail">
+                <img v-bind:src="url_img+list.poster_path" alt="..." style="min-height:300px;height:350px;">
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-6">
+              <!-- <div class="thumbnail"> -->
+                <div class="caption">
+                  <h4>{{ list.title }}</h4>
+                  <p align="justify">{{list.overview}}</p>
+                  <button v-on:click="trackClick(list)"> DETAIL</button>
+                </div>
+              <!-- </div> -->
             </div>
           </div>
-          <div class="col-sm-6 col-md-6">
-            <!-- <div class="thumbnail"> -->
-              <div class="caption">
-                <h4>{{ list.title }}</h4>
-                <p align="justify">{{list.overview}}</p>
-                <!-- <p><a href="#" class="btn btn-success" role="button" v-on:click="counter">Beli</a></p> -->
-              </div>
-            <!-- </div> -->
+
+          <div class="col-sm-12">
+            <div v-for="data in lists_music" class="col-md-3 col-sm-6">
+                <div class="item" v-on:click="fetchTracks(data.id)">
+                    <img class="img-responsive" v-bind:src="data.images[0].url" alt="">
+                    </audio>
+                </div>
+            </div>
           </div>
-          </a>
         </div>
-    </div>
+
+
     </div>
     </div>
   </div>
