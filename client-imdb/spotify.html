@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>preview spot</title>
+</head>
+
+<body>
+    <div class="body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <h1>Expandable Search Form</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-3">
+                    <form action="" class="search-form" v-on:submit.prevent="searchAlbum()">
+                        <div class="form-group has-feedback">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" name="search" placeholder="search" v-model="query">
+                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="sound-items">
+            <div class="container-fluid">
+                <div v-for="data in list" class="col-md-3 col-sm-6">
+                    <div class="item" v-on:click="fetchTracks(data.id)">
+                        <img class="img-responsive" v-bind:src="data.images[0].url" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    $(document).ready(function() {
+
+        var app = new Vue({
+            el: '.body',
+            data: {
+                query: '',
+                list: [],
+                trackPreview:'',
+                audioObject: new Audio()
+            },
+            methods: {
+                searchAlbum: function() {
+                    axios.get(`https://api.spotify.com/v1/search`, {
+                            params: {
+                                q: this.query,
+                                type: 'album'
+                            }
+                        })
+                        .then(function(response) {
+                            app.list = response.data.albums.items
+                            console.log(app.list);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                },
+                fetchTracks: function(albumId) {
+                    axios.get(`https://api.spotify.com/v1/albums/${albumId}`)
+                        .then(function(response) {
+                            app.playTracks(response.data.tracks.items[0].preview_url)
+
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                },
+                playTracks: function(track){
+                  if (this.trackPreview===track) {
+                    this.audioObject.pause();
+                  }else{
+                    this.audioObject.pause();
+                    this.trackPreview=track
+                    this.audioObject = new Audio(this.trackPreview);
+                    this.audioObject.play();
+                  }
+
+                }
+            }
+
+        })
+
+
+
+
+    });
+</script>
+
+</html>
