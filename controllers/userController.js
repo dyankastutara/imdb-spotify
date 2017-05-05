@@ -25,7 +25,7 @@ methods.signup = (req, res)=>{
       }
     }
     else{
-      res.send(user)
+      res.send("Username Sudah digunakan")
     }
   })
 };
