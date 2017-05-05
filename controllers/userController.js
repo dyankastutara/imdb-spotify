@@ -60,4 +60,15 @@ methods.findByUsername = (req, res) => {
       res.send(query);
   })
 }
+
+methods.userValidation = function(req, res){
+  jwt.verify(req.body.token, 'secret', (err, decoded) => {
+      if (decoded) {
+        res.send('valid')
+      } else {
+        res.send('not valid')
+      }
+  })
+}
+
 module.exports = methods

@@ -12,7 +12,8 @@ var app = new Vue({
     trackPreview: '',
     audioObject: new Audio(),
     page: 1,
-    disableButton: false
+    disableButton: false,
+    userValid:false
   },
   methods: {
     logout: function () {
@@ -20,20 +21,23 @@ var app = new Vue({
       window.location.href = 'http://127.0.0.1:8080/signin.html'
     },
     getToken: function () {
-      var getToken = localStorage.getItem('token')
-      if (getToken == null) {
-        this.text_in = 'Signin'
-        this.link_in = '/signin.html'
-        this.text_out = 'Signup'
-        this.link_out = '/signup.html'
-        this.disableButton = true
-      }else {
-        this.text_in = 'Welcome'
-        this.link_in = '#'
-        this.text_out = 'Logout'
-        this.link_out = 'logout.html'
-        this.disableButton = false
-      }
+      console.log('ini gettoken '+this.userValid);
+      console.log('asdasdasd');
+      if(this.userValid===false){
+
+          this.text_in = 'Signin'
+          this.link_in = '/signin.html'
+          this.text_out = 'Signup'
+          this.link_out = '/signup.html'
+          this.disableButton = true
+        }else {
+          this.text_in = 'Welcome'
+          this.link_in = '#'
+          this.text_out = 'Logout'
+          this.link_out = 'logout.html'
+          this.disableButton = false
+        }
+
     },
     getData: function () {
       axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=1ad666ec91a4fdd4791ec175eee11d5a&language=en-US&page=${this.page}`, {
@@ -48,10 +52,12 @@ var app = new Vue({
         })
     },
     pageNext: function () {
+      this.lists_music = [];
       this.page++
       this.getData()
     },
     pagePrev: function () {
+      this.lists_music = [];
       this.page--
       if (this.page < 1) {
         this.page = 1
@@ -59,6 +65,7 @@ var app = new Vue({
       this.getData()
     },
     clickSearch: function () {
+      this.lists_music = [];
       axios.get(`http://localhost:3000/film/${this.search}`)
         .then(function (response) {
           app.lists = response.data.results
@@ -93,19 +100,49 @@ var app = new Vue({
           console.log(error)
         })
     },
-    playTracks: function (track) {
-      if (this.trackPreview === track) {
-        this.audioObject.pause()
-      }else {
-        this.audioObject.pause()
-        this.trackPreview = track
-        this.audioObject = new Audio(this.trackPreview)
-        this.audioObject.play()
+    playTracks: function(track){
+      console.log(this.checkAudio(this.audioObject));
+      if (this.trackPreview===track) {
+
+        if(this.checkAudio(this.audioObject)){
+          this.audioObject.pause();
+        }else{
+
+          this.audioObject.play();
+        }
+      }else{
+        this.audioObject.pause();
+        this.trackPreview=track
+        this.audioObject = new Audio(this.trackPreview);
+        this.audioObject.play();
       }
+
+    },
+    checkAudio: function(audElem){
+      return !audElem.paused;
+    },
+    tokenValidation: function(){
+      var tokenValue = localStorage.getItem('token')
+      axios.post('http://localhost:3000/users/validate', {
+        token:tokenValue
+      }).then(function(response){
+        if (response.data==='valid') {
+          console.log('ini benar');
+          app.userValid=true
+          app.getToken()
+        }else{
+          console.log('ini salah');
+          app.userValid=false
+          console.log(this.userValid);
+          app.getToken()
+        }
+
+      }).catch(function(response){
+      })
     }
   },
   created: function () {
-    this.getToken()
+    this.tokenValidation()
     this.getData()
   }
 })
