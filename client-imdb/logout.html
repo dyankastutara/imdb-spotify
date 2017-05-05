@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="./lib/axios.min.js"></script>
+    <script src="./lib/vue.js"></script>
+  </head>
+  <body>
+
+  </body>
+  <script>
+  var app = new Vue({
+    created : function(){
+      localStorage.clear()
+      window.location.href = 'http://127.0.0.1:8080/signin.html'
+    }
+  })
+  </script>
+</html>

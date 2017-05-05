@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <title>themoviedb-Spotify</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <script src="./lib/axios.min.js"></script>
+    <script src="./lib/vue.js"></script>
+    <style>
+        body         { padding-top:5%; }
+    </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="col-sm-6 col-sm-offset-3">
+          <h1><span class="fa fa-sign-in"></span> Login</h1>
+              <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" class="form-control" name="text" v-model="username">
+              </div>
+              <div class="form-group">
+                  <label>Password</label>
+                  <input type="password" class="form-control" name="password" v-model="password">
+              </div>
+              <button type="submit" class="btn btn-warning btn-lg" v-on:click="verify_login">Sign In</button>
+          <hr>
+          <p>Need an account? <a href="/signup.html">Signup</a></p>
+          <p>Or go <a href="/">home</a>.</p>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    username : "",
+    password : ""
+  },
+  methods : {
+    verify_login : function(){
+      axios.post('http://localhost:3000/users/signin',{
+        username : this.username,
+        password : this.password
+      })
+      .then(function (req, res) {
+        // console.log(req.data.token)
+        localStorage.setItem("token", req.data.token);
+        window.location.href ='http://127.0.0.1:8080/index.html';
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+})
+</script>
+</html>
